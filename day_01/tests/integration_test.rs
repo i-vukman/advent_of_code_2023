@@ -14,14 +14,14 @@ fn test_file_part_1() {
 
 #[test]
 fn test_sample_file_part_2() {
-    let input = include_str!("../input/part_2_sample.txt");
+    let input = include_bytes!("../input/part_2_sample.txt");
     let result = day_01::calculate_calibration_value_part_2(input);
     assert_eq!(result, 281);
 }
 
 #[test]
 fn test_file_part_2() {
-    let input = include_str!("../input/part_2.txt");
+    let input = include_bytes!("../input/part_2.txt");
     let result = day_01::calculate_calibration_value_part_2(input);
     assert_eq!(result, 55343);
 }

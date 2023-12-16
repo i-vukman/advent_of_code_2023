@@ -1,4 +1,6 @@
-use std::collections::HashMap;
+const NUMS: [&[u8]; 9] = [
+    b"one", b"two", b"three", b"four", b"five", b"six", b"seven", b"eight", b"nine",
+];
 
 pub fn calculate_calibration_value_part_1(input: &str) -> u32 {
     input
@@ -22,53 +24,23 @@ pub fn calculate_calibration_value_part_1(input: &str) -> u32 {
         .sum()
 }
 
-pub fn calculate_calibration_value_part_2(input: &str) -> u32 {
-    let numbers = HashMap::from([
-        ("1", 1),
-        ("2", 2),
-        ("3", 3),
-        ("4", 4),
-        ("5", 5),
-        ("6", 6),
-        ("7", 7),
-        ("8", 8),
-        ("9", 9),
-        ("one", 1),
-        ("two", 2),
-        ("three", 3),
-        ("four", 4),
-        ("five", 5),
-        ("six", 6),
-        ("seven", 7),
-        ("eight", 8),
-        ("nine", 9),
-    ]);
-
+pub fn calculate_calibration_value_part_2(input: &[u8]) -> usize {
     input
-        .lines()
+        .split(|b| b == &b'\n')
         .map(|line| {
-            let mut forwards = line;
-            let mut backwards = line;
-
-            let first_digit = 'outer: loop {
-                for (text, num) in numbers.iter() {
-                    if forwards.starts_with(text) {
-                        break 'outer num;
-                    }
-                }
-                forwards = forwards.get(1..).unwrap();
-            };
-
-            let second_digit = 'outer: loop {
-                for (text, num) in numbers.iter() {
-                    if backwards.ends_with(text) {
-                        break 'outer num;
-                    }
-                }
-                backwards = backwards.get(..backwards.len() - 1).unwrap();
-            };
-
-            first_digit * 10 + second_digit
+            (0..line.len()).find_map(|i| num(line, i)).unwrap() * 10
+                + (0..line.len()).rev().find_map(|i| num(line, i)).unwrap()
         })
-        .sum()
+        .sum::<usize>()
+}
+
+fn num(line: &[u8], index: usize) -> Option<usize> {
+    line[index]
+        .is_ascii_digit()
+        .then_some((line[index] - b'0') as usize)
+        .or(NUMS
+            .iter()
+            .enumerate()
+            .find(|(_, num)| line[index..].starts_with(num))
+            .map(|(i, _)| i + 1))
 }
